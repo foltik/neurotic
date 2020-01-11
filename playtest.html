@@ -30,7 +30,7 @@
      }
 
      const spectrum = widget((w, h) => {
-         const data = fft.analyze();
+         let data = fft.analyze().slice(0, 645);
          const len = data.length;
 
          noStroke();
