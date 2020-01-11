@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Music Analysis Test</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js" integrity="sha256-UZcJhkL1z2sBS6X+IfDoYsN3G8Cliast0jio7GtJUSc=" crossorigin="anonymous" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.js" integrity="sha256-njhZAUln7gZqA/rnClOIe5f/eE92CJ5GgGSbHSKLsWw=" crossorigin="anonymous" defer></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body></body>
+    <script src="lib.js"></script>
+    <script defer>
+     let fft;
+     let amp;
+     let sound;
+
+     function preload() {
+         sound = loadSound('candyland.mp3');
+     }
+
+     function setup() {
+         let canvas = createCanvas(500, 500);
+         canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
+
+         fft = new p5.FFT();
+         amp = new p5.Amplitude();
+
+         sound.amp(0.2);
+     }
+
+     const spectrum = widget((w, h) => {
+         const data = fft.analyze();
+         const len = data.length;
+
+         noStroke();
+
+         range(len).map(i => {
+             const x = map(i, 0, len, 0, w);
+             const level = map(data[i], 0, 255, 0, h);
+             rect(x, h - level, w / len, h);
+         });
+     });
+
+     const meter = widget((w, h) => {
+         const level = map(amp.getLevel(), 0, 1, 0, h);
+         noStroke();
+         rect(0, h - level, w, level);
+     });
+
+     const waveform = widget((w, h) => {
+         push();
+
+         let wave = fft.waveform();
+         const len = wave.length;
+
+         noFill();
+
+         beginShape();
+         range(len).map(i => {
+             const x = map(i, 0, len, 0, w);
+             const y = map(wave[i], -1, 1, 0, h);
+             vertex(x, y);
+         });
+         endShape();
+
+         pop();
+     });
+
+     function draw() {
+         background(0);
+
+         fill(0, 255, 0);
+         spectrum(width - 50, height);
+
+         stroke(0, 255, 0);
+         strokeWeight(1);
+         waveform(width - 50, height);
+
+         at(width - 50, 0, () => meter(50, height));
+
+         noStroke();
+         fill(0, 255, 0);
+         rect(width - 51, 0, 1, height);
+     }
+    </script>
+</html>
