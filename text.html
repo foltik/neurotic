@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Color Multiply Test</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js" integrity="sha256-UZcJhkL1z2sBS6X+IfDoYsN3G8Cliast0jio7GtJUSc=" crossorigin="anonymous" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.js" integrity="sha256-njhZAUln7gZqA/rnClOIe5f/eE92CJ5GgGSbHSKLsWw=" crossorigin="anonymous" defer></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body></body>
+    <script src="lib.js"></script>
+    <script defer>
+     let fft;
+     let amp;
+     let sound;
+     let font;
+
+     function preload() {
+         sound = loadSound('candyland.mp3');
+         font = loadFont('da_mad_rave_italic.otf');
+     }
+
+     function setup() {
+         let canvas = createCanvas(430, 300);
+         canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
+
+         fft = new p5.FFT();
+         amp = new p5.Amplitude();
+
+         sound.amp(0.2);
+     }
+
+     let t = 0;
+     function draw() {
+         blendMode(BLEND);
+         background(0);
+         textFont(font);
+
+         fill(255, 255, 255);
+         scale(3);
+         range(6).map(i => {
+             const [r, g, b] = rgb(0.33, sin(t + i * 0.5), 1);
+             fill(r, g, b);
+             text('NEUROTIC', 10, i * 14 + 20);
+         });
+
+         t += amp.getLevel();
+     }
+    </script>
+</html>
