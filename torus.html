@@ -17,7 +17,8 @@
      let sound;
 
      function preload() {
-         sound = loadSound('candyland.mp3');
+         sound = new p5.AudioIn();
+         sound.start();
      }
 
      function setup() {
@@ -27,7 +28,9 @@
          fft = new p5.FFT(smooth, bins);
          amp = new p5.Amplitude();
 
-         sound.amp(0.2);
+         sound.connect(fft);
+         sound.connect(amp);
+         sound.amp(0.85);
      }
 
      let t = 0;

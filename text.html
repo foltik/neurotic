@@ -17,16 +17,18 @@
      let font;
 
      function preload() {
-         sound = loadSound('candyland.mp3');
+         sound = new p5.AudioIn();
+         sound.start();
          font = loadFont('da_mad_rave_italic.otf');
      }
 
      function setup() {
          let canvas = createCanvas(430, 300);
-         canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
 
          fft = new p5.FFT();
          amp = new p5.Amplitude();
+         sound.connect(fft);
+         sound.connect(amp);
 
          sound.amp(0.2);
      }
@@ -40,8 +42,7 @@
          fill(255, 255, 255);
          scale(3);
          range(6).map(i => {
-             const factor = 0.5 * sin(t + i * 0.5) + 0.5;
-             const [r, g, b] = rgb(0.33, factor, 1);
+             const [r, g, b] = rgb(0.33, sin(t + i * 0.5), 1);
              fill(r, g, b);
              text('NEUROTIC', 10, i * 14 + 20);
          });
