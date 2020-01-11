@@ -16,6 +16,23 @@ function arange(i, j, delta) {
     return result;
 };
 
+const stream = url => {
+    const el = document.createElement('audio');
+    el.src = url;
+    el.crossOrigin = 'anonymous';
+    el.autoplay = true;
+    el.loop = true;
+    el.controls = true;
+    document.body.append(el);
+    //const el = document.getElementById('stream');
+
+    const ctx = getAudioContext();
+    const src = ctx.createMediaElementSource(el);
+    src.connect(p5.soundOut);
+
+    return el;
+};
+
 const widget = fn => (...args) => {
     push();
     fn(...args);
