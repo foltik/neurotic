@@ -75,3 +75,104 @@ function hsv(r, g, b) {
 
     return [h, s, v];
 }
+
+class OnsetDetect {
+    constructor(f0, f1, thres, bpm) {
+        this.f0 = f0;
+        this.f1 = f1;
+        this.thres = thres;
+
+        this.e0 = 0;
+        this.e = 0;
+
+        this.lock = false;
+        this.sens = 1 / (bpm / 60) * 1000;
+    }
+
+    sens(bpm) {
+        this.sens = 1 / (bpm / 60) * 1000;
+    }
+
+    detect() {
+        const [e, e0] = [fft.getEnergy(this.f0, this.f1) / 255, this.e0];
+        this.e0 = e;
+
+        if (!this.lock && e - e0 > this.thres) {
+            this.lock = true;
+            setTimeout(() => this.lock = false, this.sens);
+            return true;
+        }
+
+        return false;
+    }
+}
+
+class BeatDetect {
+    constructor(f0, f1, thres, bpm) {
+        this.f0 = f0;
+        this.f1 = f1;
+        this.thres = thres;
+
+        this.lock = false;
+        this.sens = 1 / (bpm / 60) * 1000;
+    }
+
+    sens(bpm) {
+        this.sens = 1 / (bpm / 60) * 1000;
+    }
+
+    detect() {
+        const e = fft.getEnergy(this.f0, this.f1) / 255;
+
+        if (!this.lock && e > this.thres) {
+            this.lock = true;
+            setTimeout(() => this.lock = false, this.sens);
+            return true;
+        }
+
+        return false;
+    }
+}
+
+class Decay {
+    constructor(min, max, t, step) {
+        this.x = min;
+
+        const rate = (max - min) / t;
+
+        setInterval(() => {
+            this.x > min && (this.x -= (1 / step) * rate);
+            this.x > max && (this.x = max);
+        }, 1 / step * 1000);
+    }
+
+    set(x) {
+        this.x = x;
+    }
+
+    get() {
+        return this.x;
+    }
+}
+
+
+
+
+
+let amp;
+let fft;
+let bands;
+
+const preload_hook = () => {
+
+};
+
+const setup_hook = () => {
+    amp = new p5.Amplitude();
+    fft = new p5.FFT();
+    bands = fft.getOctaveBands();
+};
+
+const draw_hook = () => {
+    fft.analyze();
+};
