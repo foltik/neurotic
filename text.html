@@ -40,7 +40,8 @@
          fill(255, 255, 255);
          scale(3);
          range(6).map(i => {
-             const [r, g, b] = rgb(0.33, sin(t + i * 0.5), 1);
+             const factor = 0.5 * sin(t + i * 0.5) + 0.5;
+             const [r, g, b] = rgb(0.33, factor, 1);
              fill(r, g, b);
              text('NEUROTIC', 10, i * 14 + 20);
          });
