@@ -11,20 +11,19 @@
     <body></body>
     <script src="lib.js"></script>
     <script defer>
-     let fft;
-     let amp;
      let sound;
 
      function preload() {
+         preload_hook();
+
          sound = loadSound('candyland.mp3');
      }
 
      function setup() {
+         setup_hook();
+
          let canvas = createCanvas(500, 500);
          canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
-
-         fft = new p5.FFT();
-         amp = new p5.Amplitude();
 
          sound.amp(0.2);
      }
@@ -49,8 +48,6 @@
      });
 
      const waveform = widget((w, h) => {
-         push();
-
          let wave = fft.waveform();
          const len = wave.length;
 
@@ -63,11 +60,11 @@
              vertex(x, y);
          });
          endShape();
-
-         pop();
      });
 
      function draw() {
+         draw_hook();
+
          background(0);
 
          fill(0, 255, 0);
