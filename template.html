@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Template</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js" integrity="sha256-UZcJhkL1z2sBS6X+IfDoYsN3G8Cliast0jio7GtJUSc=" crossorigin="anonymous" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.js" integrity="sha256-njhZAUln7gZqA/rnClOIe5f/eE92CJ5GgGSbHSKLsWw=" crossorigin="anonymous" defer></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body></body>
+    <script src="lib.js"></script>
+    <script defer>
+     let fft;
+     let amp;
+     let sound;
+
+     function preload() {
+         sound = loadSound('candyland.mp3');
+     }
+
+     function setup() {
+         let canvas = createCanvas(1600, 900);
+         canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
+
+         fft = new p5.FFT();
+         amp = new p5.Amplitude();
+
+         sound.amp(0.2);
+     }
+
+     function draw() {
+         background(0);
+     }
+    </script>
+</html>
