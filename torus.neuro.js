@@ -6,11 +6,8 @@ neuro_config({
 
 neuro_setup(() => {
     neuro_source('in');
-
     let canvas = createCanvas(1600, 900, WEBGL);
-    canvas.mouseClicked(() => sound.isPlaying() ? sound.pause() : sound.loop());
 });
-
 
 neuro_draw(() => {
     let t = neuro_get('t', 0);

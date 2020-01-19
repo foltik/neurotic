@@ -204,6 +204,10 @@ const neuro_set_all = obj => Object.entries(obj).map(([k,v]) => neuro_vars.set(k
 const neuro_get = (k, def) => neuro_vars.has(k) ? neuro_vars.get(k) : def;
 const neuro_get_all = (...args) => args.map(k => neuro_vars.get(k));
 
+// Init function that runs on script reload and post setup
+let neuro_init_fn;
+const neuro_init = fn => neuro_init_fn = fn;
+
 // Handler for script changes
 let neuro_script_fn;
 const neuro_on_script = (name, fn) => neuro_script_fn = fn;
@@ -270,6 +274,8 @@ const neuro_setup = neuro_structure('setup', () => {
     amp = new p5.Amplitude();
     fft = new p5.FFT(neuro_cfg.fft_smooth, neuro_cfg.fft_bins);
     bands = fft.getOctaveBands();
+}, () => {
+    neuro_init_fn && neuro_init_fn();
 });
 
 const neuro_draw = neuro_structure('draw', () => {
@@ -302,6 +308,7 @@ socket.on('script', ({name, data}) => {
     if (name == self) {
         eval(data);
         first && (new p5(), first = false);
+        neuro_init_fn && neuro_init_fn();
     }
 });
 

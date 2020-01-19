@@ -1,8 +1,9 @@
 neuro_setup(() => {
     neuro_source('in');
-
     let canvas = createCanvas(1024, 400);
+});
 
+neuro_init(() => {
     textAlign(CENTER);
     textSize(8);
     noStroke();

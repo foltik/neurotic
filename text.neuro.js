@@ -4,9 +4,10 @@ neuro_preload(() => {
 
 neuro_setup(() => {
     neuro_source('in');
-
     let canvas = createCanvas(430, 300);
+});
 
+neuro_init(() => {
     const bpm = 250;
     onset = new OnsetDetect(40, 120, 0.025, bpm);
     decay = new Decay(1, 1.05, 1 / (bpm / 60), 50);
