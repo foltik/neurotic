@@ -204,6 +204,16 @@ const neuro_set_all = obj => Object.entries(obj).map(([k,v]) => neuro_vars.set(k
 const neuro_get = (k, def) => neuro_vars.has(k) ? neuro_vars.get(k) : def;
 const neuro_get_all = (...args) => args.map(k => neuro_vars.get(k));
 
+const neuro_slider = (k, min, max) => {
+    const el = document.createElement('input');
+    el.type = 'range';
+    el.min = min;
+    el.max = max;
+    el.value = min;
+    el.oninput = () => neuro_set(k, +el.value);
+    document.body.append(el);
+};
+
 // Init function that runs on script reload and post setup
 let neuro_init_fn;
 const neuro_init = fn => neuro_init_fn = fn;

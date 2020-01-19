@@ -1,7 +1,6 @@
 neuro_setup(() => {
     neuro_source('in');
     let canvas = createCanvas(1280, 720, WEBGL);
-    neuro_slider('slider', 0, 100);
 });
 
 const [rows, cols] = [50, 50, 10];
