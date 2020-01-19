@@ -1,10 +1,10 @@
-const range = x => [...Array(x)].map((_, i) => i);
+///////// Helpers
 
-function arange(i, j, delta) {
+function range(i, j, delta) {
     if (arguments.length === 1) {
-        return arange(0, i, 1);
+        return range(0, i, 1);
     } else if (arguments.length === 2) {
-        return arange(i, j, 1);
+        return range(i, j, 1);
     }
 
     let result = [];
@@ -14,23 +14,6 @@ function arange(i, j, delta) {
         i += delta;
     }
     return result;
-};
-
-const stream = url => {
-    const el = document.createElement('audio');
-    el.src = url;
-    el.crossOrigin = 'anonymous';
-    el.autoplay = true;
-    el.loop = true;
-    el.controls = true;
-    document.body.append(el);
-    //const el = document.getElementById('stream');
-
-    const ctx = getAudioContext();
-    const src = ctx.createMediaElementSource(el);
-    src.connect(p5.soundOut);
-
-    return el;
 };
 
 const widget = fn => (...args) => {
@@ -93,6 +76,10 @@ function hsv(r, g, b) {
     return [h, s, v];
 }
 
+
+///////// Classes
+
+
 class OnsetDetect {
     constructor(f0, f1, thres, bpm) {
         this.f0 = f0;
@@ -151,6 +138,26 @@ class BeatDetect {
     }
 }
 
+class Beat {
+    constructor(bpm) {
+        this.bpm = bpm;
+        this.last = Date.now();
+    }
+
+    bpm(x) {
+        this.bpm = x;
+    }
+
+    beat() {
+        const now = Date.now();
+        if (now - this.last > 1 / (this.bpm / 60) * 1000) {
+            this.last = now;
+            return true;
+        }
+        return false;
+    }
+}
+
 class Decay {
     constructor(min, max, t, step) {
         this.x = min;
@@ -173,23 +180,128 @@ class Decay {
 }
 
 
+///////// Registries and handlers
 
 
+// General config interface for internals
+let neuro_cfg = {
+    fft_smooth: undefined,
+    fft_bins: undefined
+};
+const neuro_config = cfg => neuro_cfg = cfg;
 
+// Global font map
+const neuro_fonts = new Map();
+const neuro_font = name => neuro_fonts.get(name);
+const neuro_load_font = (name, path) => {
+    neuro_fonts.set(name, loadFont('assets/' + path));
+};
+
+// Global map for maintaining variable persistence across reloads
+const neuro_vars = new Map();
+const neuro_set = (k, v) => neuro_vars.set(k, v);
+const neuro_set_all = obj => Object.entries(obj).map(([k,v]) => neuro_vars.set(k, v));
+const neuro_get = (k, def) => neuro_vars.has(k) ? neuro_vars.get(k) : def;
+const neuro_get_all = (...args) => args.map(k => neuro_vars.get(k));
+
+// Handler for script changes
+let neuro_script_fn;
+const neuro_on_script = (name, fn) => neuro_script_fn = fn;
+
+// Handler for messages
+let neuro_message_fn;
+const neuro_on_message = fn => neuro_handler = fn;
+
+// Handler mapping for events
+const neuro_event_fns = new Map();
+const neuro_on = (event, fn) => neuro_event_fns.set(event, fn);
+
+// Cross file script registry
+let neuro_scripts = new Map();
+
+
+///////// Runtime
+
+
+let neuro_src;
+let neuro_sound;
+let neuro_stream;
+
+// Globals accessible in any script
 let amp;
 let fft;
 let bands;
 
-const preload_hook = () => {
+const neuro_source = (type, cfg) => {
+    neuro_src = type;
 
+    if (type == 'in') {
+        neuro_sound = new p5.AudioIn();
+        neuro_sound.start();
+        neuro_sound.connect(fft);
+        neuro_sound.connect(amp);
+    }
+
+    if (type == 'file') {
+        neuro_sound = loadSound('assets/' + cfg.path);
+    }
+
+    if (type == 'stream') {
+        const el = document.createElement('audio');
+        el.src = cfg.url;
+        el.crossOrigin = 'anonymous';
+        el.autoplay = true;
+        document.body.append(el);
+
+        const ctx = getAudioContext();
+        neuro_stream = ctx.createMediaElementSource(el);
+        neuro_stream.connect(p5.soundOut);
+    }
 };
 
-const setup_hook = () => {
+const neuro_structure = (name, pre, post = () => {}) => fn =>
+    (window[name] = () => (pre(), fn(), post()));
+
+const neuro_preload = neuro_structure('preload', () => {
+
+});
+
+const neuro_setup = neuro_structure('setup', () => {
     amp = new p5.Amplitude();
-    fft = new p5.FFT();
+    fft = new p5.FFT(neuro_cfg.fft_smooth, neuro_cfg.fft_bins);
     bands = fft.getOctaveBands();
-};
+});
 
-const draw_hook = () => {
+const neuro_draw = neuro_structure('draw', () => {
     fft.analyze();
-};
+});
+
+
+///////// Socket Setup
+
+
+const path = window.location.pathname;
+const self = path.substring(path.lastIndexOf('/') + 1);
+
+const socket = io();
+socket.emit('init', self);
+
+socket.on('msg', d => neuro_message_fn && neuro_message_fn(d));
+
+socket.on('set', obj =>
+    Object.entries(obj).map(([k,v]) => neuro_set(k, v)));
+
+socket.on('event', ({event, data}) =>
+    neuro_event_fns.has(event) && neuro_event_fns.get(event)(data));
+
+let first = true;
+socket.on('script', ({name, data}) => {
+    neuro_scripts.set(name, data);
+    neuro_script_fn && neuro_script_fn(name, data);
+
+    if (name == self) {
+        eval(data);
+        first && (new p5(), first = false);
+    }
+});
+
