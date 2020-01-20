@@ -77,6 +77,86 @@ function hsv(r, g, b) {
 }
 
 
+///////// Interpolation
+
+
+const A = (p1, p2) => 1 - 3 * p2 + 3 * p1;
+const B = (p1, p2) => 3 * p2 - 6 * p1;
+const C = (p1)     => 3 * p1;
+const bezier_calc = (t, p1, p2) => ((A(p1, p2) * t + B(p1, p2)) * t + C(p1)) * t;
+const bezier_slope = (t, p1, p2) => 3 * A(p1, p2) * t * t + 2 * B(p1, p2) * t + C(p1);
+
+var subdivide_precision = 0.0000001;
+var subdivision_max_iters = 10;
+function binary_subdivide (x, a, b, p1, p2) {
+    let [ca, cb] = [a, b];
+    let cx, t, i = 0;
+
+    do {
+        t = ca + (cb - ca) / 2.0;
+        cx = bezier_calc(t, p1, p2) - x;
+        cx > 0 ? cb = t : ca = t;
+    } while (Math.abs(cx) > subdivide_precision && ++i < subdivision_max_iters);
+
+    return t;
+}
+
+const newton_min_slope = 0.001;
+const newton_iters = 4;
+const newton_raphson = (x, guess, p1, p2) => {
+    let t = guess;
+
+    for (let i = 0; i < newton_iters; i++) {
+        const slope = bezier_slope(t, p1, p2);
+        if (slope == 0) return t;
+
+        const cx = bezier_calc(t, p1, p2) - x;
+        t -= cx / slope;
+    }
+
+    return t;
+};
+
+const bezier = (x1, y1, x2, y2) => {
+    if (!(0 <= x1 && x1 <= 1 && 0 <= x2 && x2 <= 1)) {
+        throw new Error('bezier x values must be in [0, 1] range');
+    }
+
+    if (x1 === y1 && x2 === y2) return x => x;
+
+    const table_size = 11;
+    const table_step = 1 / (table_size - 1);
+    const table = range(table_size).map(i =>
+        bezier_calc(i * table_step, x1, x2));
+
+    const t = x => {
+        const idx = table.findIndex(v => v > x) - 1;
+        const start = idx * table_step;
+
+        var dist = (x - table[idx]) / (table[idx + 1] - table[idx]);
+        var guess = start + dist * table_step;
+        const slope = bezier_slope(guess, x1, x2);
+
+        if (slope == 0)
+            return guess;
+
+        if (slope >= newton_min_slope)
+            return newton_raphson(x, guess, x1, x2);
+
+        return binary_subdivide(x, start, start + table_step, x1, x2);
+    };
+
+    return x => x == 0 || x == 1 ? x : bezier_calc(t(x), y1, y2);
+};
+
+const ease = bezier(0.25, 0.1, 0.25, 1);
+const ease_in = bezier(0.42, 0, 1.0, 1.0);
+const ease_out = bezier(0, 0, 0.58, 1.0);
+const ease_in_out = bezier(0.42, 0, 0.58, 1);
+
+const step = n => x => Math.floor(n * x) / n;
+const rstep = n => x => Math.floor((n + 1) * x) / n;
+
 ///////// Classes
 
 
