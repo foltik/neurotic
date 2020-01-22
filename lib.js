@@ -146,7 +146,7 @@ const bezier = (x1, y1, x2, y2) => {
         return binary_subdivide(x, start, start + table_step, x1, x2);
     };
 
-    return x => x == 0 || x == 1 ? x : bezier_calc(t(x), y1, y2);
+    return x => x == 0 || x == 1 ? x : bezier_calc(t(x % 1), y1, y2);
 };
 
 const ease = bezier(0.25, 0.1, 0.25, 1);
@@ -154,8 +154,16 @@ const ease_in = bezier(0.42, 0, 1.0, 1.0);
 const ease_out = bezier(0, 0, 0.58, 1.0);
 const ease_in_out = bezier(0.42, 0, 0.58, 1);
 
-const step = n => x => Math.floor(n * x) / n;
-const rstep = n => x => Math.floor((n + 1) * x) / n;
+const istep = n => x => Math.floor(n * (x % 1));
+const irstep = n => x => Math.floor((n + 1) * (x % 1));
+
+const step = n => x => istep(n)(x) / n;
+const rstep = n => x => irstep(n)(x) / n;
+
+const mirror = delta => x => x % delta > delta / 2 ? delta - (x % delta) : x % delta;
+
+const fmap = (x0, x1, y0, y1) => x => map(x, x0, x1, y0, y1);
+const lerp = (x0, x1) => fmap(0, 1, x0, x1);
 
 ///////// Classes
 
