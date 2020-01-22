@@ -26,7 +26,7 @@ function typer(strs, period) {
         rect(i * (width / len), 2, width / len, 5);
     });
 
-    animate(0.1, 0.11, fr => rect(width, 2, (1 - fr) * (width / len), 5));
+    animate(0.1, 0.11, fr => rect(width, 2, (1 - ease_in_out(fr)) * (width / len), 5));
     animate(0.1, 0.9, () => text(str, 0, 0));
     animate(0.89, 0.9, fr => rect(width, 2, fr * (width / len), 5));
 
