@@ -9,7 +9,7 @@ neuro_setup(() => {
 
 neuro_init(() => {
     const bpm = 250;
-    onset = new OnsetDetect(40, 120, 0.025, bpm);
+    onset = new OnsetDetect(40, 120, 0.015, bpm);
     decay = new Decay(1, 1.05, 1 / (bpm / 60), 50);
 
     neuro_set_all({onset, decay});
@@ -38,6 +38,6 @@ neuro_draw(() => {
         text('NEUROTIC', 65, i * 14 + 20);
     });
 
-    t += 2 * amp.getLevel();
+    t += amp.getLevel();
     neuro_set('t', t);
 });
