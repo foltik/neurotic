@@ -23,25 +23,17 @@ const scroll = str => {
     const p1 = tc % size;
     const p2 = p1 - size;
 
-    wit(() => translate(0, p1), () => {
-        lines.map((l, i) => {
-            const factor = 0.5 * sin(t + i * 0.15) + 0.5;
+    const render = lines => lines.map((l, i) => {
+        const factor = 0.5 * sin(0.1 * t + i * 0.15) + 0.5;
 
-            const [r, g, b] = rgb(0.85, factor, 1);
-            fill(r, g, b);
-            text(l, 0, i * 8);
-        });
+        const [r, g, b] = rgb(0.75, factor, 1);
+        fill(r, g, b);
+        text(l, 0, i * 8);
     });
 
-    wit(() => translate(0, p2), () => {
-        lines.map((l, i) => {
-            const factor = 0.5 * sin(t + i * 0.15) + 0.5;
+    wit(() => translate(0, p1), () => render(lines));
 
-            const [r, g, b] = rgb(0.85, factor, 1);
-            fill(r, g, b);
-            text(l, 0, i * 8);
-        });
-    });
+    wit(() => translate(0, p2), () => render(lines));
 };
 
 neuro_draw(() => {
@@ -62,7 +54,7 @@ neuro_draw(() => {
     translate(3, 0);
     scroll(neuro_scripts.get('torus') || '');
 
-    t += 2 * amp.getLevel();
+    t += amp.getLevel();
     tc += 1;
     neuro_set_all({t, tc});
 });
