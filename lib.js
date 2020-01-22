@@ -249,6 +249,7 @@ class Beat {
 class Decay {
     constructor(min, max, t, step) {
         this.x = min;
+        this.max = max;
 
         const rate = (max - min) / t;
 
@@ -256,6 +257,10 @@ class Decay {
             this.x > min && (this.x -= (1 / step) * rate);
             this.x > max && (this.x = max);
         }, 1 / step * 1000);
+    }
+
+    max() {
+        this.x = this.max;
     }
 
     set(x) {
