@@ -28,6 +28,20 @@ const waveform = widget((w, h) => {
 
     noFill();
 
+    const [cx, cy] = [20, 20];
+
+    push();
+    stroke(50);
+    range(h / cy).map(y => {
+        beginShape(QUAD_STRIP);
+        range(w / cx).map(x => {
+            vertex(x * cx, y * cy);
+            vertex(x * cx, (y + 1) * cy);
+        });
+        endShape();
+    });
+    pop();
+
     beginShape();
     range(len).map(i => {
         const x = map(i, 0, len, 0, w);
@@ -35,6 +49,7 @@ const waveform = widget((w, h) => {
         vertex(x, y);
     });
     endShape();
+
 });
 
 neuro_draw(() => {
@@ -42,7 +57,7 @@ neuro_draw(() => {
     background(255, 0, 0, 30);
 
     fill(0, 255, 0);
-    spectrum(width - 50, height);
+    //spectrum(width - 50, height);
 
     stroke(0, 255, 0);
     strokeWeight(1);

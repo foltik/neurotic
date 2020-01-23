@@ -17,11 +17,14 @@ neuro_draw(() => {
     const tc = neuro_get('tc', 0);
     const [onset, decay] = neuro_get_all('onset', 'decay');
 
+    onset.detect() && decay.set(1.05);
+
     let terrain = range(rows).map(i =>
         range(cols).map(j =>
-            map(noise(i * 0.1, j * 0.1 + tc * 0.03), 0, 1, -10, 10)));
+            map(noise(i * 0.1, j * 0.1 + t * 0.2), 0, 1, -10, 10)));
 
-    onset.detect() && decay.set(1.05);
+    const [r, g, b] = rgb(t * 0.01, map(decay.get(), 1, 1.05, 0.8, 1), 1);
+    stroke(r, g, b);
 
     background(0);
     rotateX(radians(60));
@@ -30,7 +33,6 @@ neuro_draw(() => {
     scale(20);
 
     range(rows - 1).map(i => {
-        stroke(255);
         noFill();
         beginShape(TRIANGLE_STRIP);
         range(cols).map(j => {
@@ -40,6 +42,6 @@ neuro_draw(() => {
         endShape();
     });
 
-    neuro_set('t', t + 2 * amp.getLevel());
+    neuro_set('t', t + (3 * decay.get()) * amp.getLevel());
     neuro_set('tc', tc + 1);
 });
