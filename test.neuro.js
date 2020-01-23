@@ -9,10 +9,10 @@ const spectrum = widget((w, h) => {
 
     noStroke();
 
-    range(len).map(i => {
+    range(len).each(i => {
         const x = map(i, 0, len, 0, w);
         const level = map(data[i], 0, 255, 0, h);
-        rect(x, h - level, w / len, h);
+        rect(x, h - level, w / len, level);
     });
 });
 
@@ -28,44 +28,44 @@ const waveform = widget((w, h) => {
 
     noFill();
 
-    const [cx, cy] = [20, 20];
+    const [dx, dy] = [w / 20, h / 20];
 
     push();
     stroke(50);
-    range(h / cy).map(y => {
+    range(0, h, dy).each(y => {
         beginShape(QUAD_STRIP);
-        range(w / cx).map(x => {
-            vertex(x * cx, y * cy);
-            vertex(x * cx, (y + 1) * cy);
+        range(0, w + dx, dx).each(x => {
+            vertex(x, y);
+            vertex(x, y + dy);
         });
         endShape();
     });
     pop();
 
     beginShape();
-    range(len).map(i => {
+    range(len).each(i => {
         const x = map(i, 0, len, 0, w);
         const y = map(wave[i], -1, 1, 0, h);
         vertex(x, y);
     });
     endShape();
-
 });
 
 neuro_draw(() => {
     background(0);
-    background(255, 0, 0, 30);
-
-    fill(0, 255, 0);
-    //spectrum(width - 50, height);
 
     stroke(0, 255, 0);
-    strokeWeight(1);
-    waveform(width - 50, height);
 
-    at(width - 50, 0, () => meter(50, height));
+    at(0, height - 150, () =>
+        spectrum(width - 50, 150));
 
-    noStroke();
+    at(0, 0, () =>
+        waveform(width - 50, height));
+
+    at(width - 50, 0, () =>
+        meter(50, height));
+
     fill(0, 255, 0);
+    noStroke();
     rect(width - 51, 0, 1, height);
 });

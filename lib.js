@@ -106,7 +106,7 @@ const bezier = (x1, y1, x2, y2) => {
 
     const table_size = 11;
     const table_step = 1 / (table_size - 1);
-    const table = range(table_size).map(i =>
+    const table = range(table_size).amap(i =>
         bezier_calc(i * table_step, x1, x2));
 
     const t = x => {

@@ -39,12 +39,13 @@ neuro_draw(() => {
     const i2 = istep(n)(t * 0.03 + 0.5);
 
     push();
-    range(0, 2*PI, 2*PI / n).map((f, i) => {
+    range(0, 2*PI, 2*PI / n).each((f, i) => {
         const d = spec[i] / 255;
         const ir = 100 + (100 * d);
         const or = 200 + (50 * d);
 
         const [tx, ty] = [or * cos(f), or * sin(f)];
+
         let [lr, lg, lb] = rgb(0.83, d, 1);
 
         if (i == i1 || i == i2) {

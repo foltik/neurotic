@@ -30,7 +30,7 @@ neuro_draw(() => {
 
     fill(255, 255, 255);
     scale(3 * decay.get());
-    range(6).map(i => {
+    range(6).each(i => {
         const factor = 0.5 * sin(t + i * 0.5) + 0.5;
 
         const [r, g, b] = rgb(0.320, factor, 1);

@@ -15,7 +15,7 @@ neuro_draw(() => {
     const data = fft.logAverages(bands);
     const len = bands.length;
 
-    range(len).map(i => {
+    range(len).each(i => {
         fill((i * 30) % 100 + 50, 195, ((i * 25) + 50) % 255);
 
         const h = -height + map(data[i], 0, 255, height, 0);
