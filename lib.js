@@ -1,21 +1,5 @@
 ///////// Helpers
 
-function range(i, j, delta) {
-    if (arguments.length === 1) {
-        return range(0, i, 1);
-    } else if (arguments.length === 2) {
-        return range(i, j, 1);
-    }
-
-    let result = [];
-    let n = 0;
-    while (i < j) {
-        result[n++] = i;
-        i += delta;
-    }
-    return result;
-};
-
 const widget = fn => (...args) => {
     push();
     fn(...args);
@@ -118,10 +102,6 @@ const newton_raphson = (x, guess, p1, p2) => {
 };
 
 const bezier = (x1, y1, x2, y2) => {
-    if (!(0 <= x1 && x1 <= 1 && 0 <= x2 && x2 <= 1)) {
-        throw new Error('bezier x values must be in [0, 1] range');
-    }
-
     if (x1 === y1 && x2 === y2) return x => x;
 
     const table_size = 11;
@@ -162,8 +142,21 @@ const rstep = n => x => irstep(n)(x) / n;
 
 const mirror = delta => x => x % delta > delta / 2 ? delta - (x % delta) : x % delta;
 
-const fmap = (x0, x1, y0, y1) => x => map(x, x0, x1, y0, y1);
-const lerp = (x0, x1) => fmap(0, 1, x0, x1);
+const cmap = (x0, x1, y0, y1) => x => map(x, x0, x1, y0, y1);
+const amap = (xs0, xs1, ys0, ys1) => x =>
+      zip(zip(xs0, xs1), zip(ys0, ys1))
+          .map(([[x0, x1], [y0, y1]]) => map(x, x0, x1, y0, y1));
+
+const lerp = (x0, x1) => cmap(0, 1, x0, x1);
+const alerp = (xs0, xs1) =>
+      zip(xs0, xs1).map(([x0, x1]) => cmap(0, 1, x0, x1));
+
+const gradient = (c0, c1) => x =>
+      [...alerp(c0, c1).map(f => f(x % 1))];
+
+const ngradient = (...pts) =>
+      pts.slice(1).reduce(([fn, [c0, x0]], [c1, x1]) =>
+          [x => fzip(add)(fn(x), x >= x0 && x <= x1 ? gradient(c0, c1) : cycle(0))]);
 
 ///////// Classes
 

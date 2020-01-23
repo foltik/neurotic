@@ -19,8 +19,8 @@ neuro_draw(() => {
 
     onset.detect() && decay.set(1.05);
 
-    let terrain = range(rows).map(i =>
-        range(cols).map(j =>
+    let terrain = range(rows).amap(i =>
+        range(cols).amap(j =>
             map(noise(i * 0.1, j * 0.1 + t * 0.2), 0, 1, -10, 10)));
 
     const [r, g, b] = rgb(t * 0.01, map(decay.get(), 1, 1.05, 0.8, 1), 1);
@@ -32,10 +32,10 @@ neuro_draw(() => {
 
     scale(20);
 
-    range(rows - 1).map(i => {
+    range(rows - 1).each(i => {
         noFill();
         beginShape(TRIANGLE_STRIP);
-        range(cols).map(j => {
+        range(cols).each(j => {
             vertex(j, i, terrain[j][i]);
             vertex(j, i + 1, terrain[j][i + 1]);
         });
