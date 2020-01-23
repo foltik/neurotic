@@ -15,6 +15,9 @@ const wit = (pre, fn) => {
 
 const at = (x, y, fn) => wit(() => translate(x, y), fn);
 
+const rectangular = (r, theta) => [r * cos(theta), r * sin(theta)];
+const polar = (x, y) => [sqrt(x * x + y * y), atan(y / x)];
+
 const rgb = (h, s, v) => {
     let r, g, b;
 
