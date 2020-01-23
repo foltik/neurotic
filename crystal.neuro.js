@@ -57,8 +57,5 @@ neuro_draw(() => {
     strokeWeight(3);
     crystal(600, 150 * decay.get(), lerp(0.5, 0.4)(mirror(2)(t * 0.03)));
 
-    stroke(0, 90, 255);
-    box(500, 500, 500);
-
     neuro_set('t', t);
 });

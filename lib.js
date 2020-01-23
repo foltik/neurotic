@@ -377,8 +377,25 @@ const neuro_source = (type, cfg) => {
     }
 };
 
-const neuro_structure = (name, pre, post = () => {}) => fn =>
-    (window[name] = () => (pre(), fn(), post()));
+const neuro_structure = (name, pre, post = () => {}) => fn => {
+    let err = false;
+    let prev = window[name];
+
+    window[name] = () => {
+        if (!err) {
+            try {
+                pre();
+                fn();
+                post();
+            } catch (e) {
+                console.error(e.stack);
+                err = true;
+            }
+        } else {
+            prev && prev();
+        }
+    };
+};
 
 const neuro_preload = neuro_structure('preload', () => {
 

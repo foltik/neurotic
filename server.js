@@ -56,8 +56,16 @@ io.on('connection', sock => {
         console.log(`${name} connected`);
 
         const file = npath.join(__dirname, `${name}.neuro.js`);
-        const update = () => fs.readFile(file, 'utf8', (err, data) =>
-            io.emit('script', {name, data}));
+
+        let lock = false;
+        const update = () => {
+            if (lock) return;
+            lock = true;
+            setTimeout(() => lock = false, 100);
+
+            fs.readFile(file, 'utf8', (err, data) =>
+                io.emit('script', {name, data}));
+        };
 
         const watcher = fs.watch(file, update);
         update();
