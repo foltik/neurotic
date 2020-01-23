@@ -12,6 +12,8 @@ neuro_init(() => {
     decay = new Decay(1, 1.05, 1 / (bpm / 60), 50);
 
     neuro_set_all({onset, decay});
+
+    neuro_set('a', true);
 });
 
 neuro_draw(() => {
@@ -22,14 +24,23 @@ neuro_draw(() => {
 
     const c0 = [0, 255, 0];
     const c1 = [0, 0, 255];
-    const c2 = [255, 0, 0];
+    const c2 = [255, 255, 0];
+    const c3 = [255, 0, 0];
 
     const g1 = gradient(c0, c1);
-    //const g2 = ngradient(c0, c1, c2);
+    const g2 = ngradient([c0, 0], [c1, 0.5], [c2, 0.75], [c3, 1]);
 
-    range(100).each(x => {
-        stroke(...g1(x/100));
-        //line(x, 20, x, 40);
+    if (neuro_get('a')) {
+        neuro_set('a', false);
+        console.log(g2(0.3));
+    }
+
+    range(300).each(x => {
+        stroke(...g1(x / 300));
+        line(x + 20, 20, x + 20, 80);
+
+        stroke(...g2(x / 300));
+        line(x + 20, 100, x + 20, 160);
     });
 
     t += amp.getLevel();

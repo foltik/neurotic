@@ -147,16 +147,31 @@ const amap = (xs0, xs1, ys0, ys1) => x =>
       zip(zip(xs0, xs1), zip(ys0, ys1))
           .map(([[x0, x1], [y0, y1]]) => map(x, x0, x1, y0, y1));
 
-const lerp = (x0, x1) => cmap(0, 1, x0, x1);
-const alerp = (xs0, xs1) =>
-      zip(xs0, xs1).map(([x0, x1]) => cmap(0, 1, x0, x1));
+const lerp = (y0, y1) => cmap(0, 1, y0, y1);
+const ilerp = (x0, x1) => cmap(x0, x1, 0, 1);
+
+const alerp = (ys0, ys1) =>
+      zip(ys0, ys1).map(([y0, y1]) => cmap(0, 1, y0, y1));
+
+const ailerp = (xs0, xs1) =>
+      zip(xs0, xs1).map(([x0, x1]) => cmap(x0, x1, 0, 1));
 
 const gradient = (c0, c1) => x =>
-      [...alerp(c0, c1).map(f => f(x % 1))];
+      alerp(c0, c1).amap(f => f(x % 1));
 
-const ngradient = (...pts) =>
-      pts.slice(1).reduce(([fn, [c0, x0]], [c1, x1]) =>
-          [x => fzip(add)(fn(x), x >= x0 && x <= x1 ? gradient(c0, c1) : cycle(0))]);
+const ngradient = (...pts) => {
+    const [[p0], ...ps] = pts;
+
+    const [fn] = ps.reduce(([fn, [c0, x0]], [c1, x1]) => [
+        x => x >= x0 && x < x1 ? gradient(c0, c1)(ilerp(x0, x1)(x)) : fn(x),
+        [c1, x1]
+    ], [
+        () => {},
+        [p0, 0]
+    ]);
+
+    return x => fn(x % 1);
+};
 
 ///////// Classes
 
@@ -310,7 +325,7 @@ const neuro_on_script = (name, fn) => neuro_script_fn = fn;
 
 // Handler for messages
 let neuro_message_fn;
-const neuro_on_message = fn => neuro_handler = fn;
+const neuro_on_message = fn => neuro_message_fn = fn;
 
 // Handler mapping for events
 const neuro_event_fns = new Map();
