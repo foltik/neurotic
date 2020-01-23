@@ -1,4 +1,4 @@
-const bins = 128;
+const bins = 64;
 neuro_config({
     fft_smooth: 0.8,
     fft_bins: bins
@@ -46,10 +46,10 @@ neuro_draw(() => {
 
         const [tx, ty] = [or * cos(f), or * sin(f)];
 
-        let [lr, lg, lb] = rgb(0.83, d, 1);
+        let [lr, lg, lb] = rgb(0.73, d, 1);
 
         if (i == i1 || i == i2) {
-            [lr, lg, lb] = rgb(0.83, map(Math.min(amp.getLevel(), 0.2), 0, 0.2, 0, 1));
+            [lr, lg, lb] = rgb(0.73, map(Math.min(amp.getLevel(), 0.2), 0, 0.2, 0, 1));
         }
 
         push();
@@ -60,7 +60,7 @@ neuro_draw(() => {
 
         if (i == i1 || i == i2) {
             strokeWeight(5);
-            [lr, lg, lb] = rgb(0.83, 1, 1);
+            [lr, lg, lb] = rgb(0.73, 1, 1);
         }
 
         stroke(lr, lg, lb);
