@@ -3,7 +3,7 @@ neuro_setup(() => {
 });
 
 neuro_init(() => {
-    neuro_set('decay', new Decay(0, 1, 3, 10));
+    neuro_set('decay', new Decay(0, 1, 3, 50));
     neuro_set('color', 0.83);
 });
 
