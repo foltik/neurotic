@@ -42,7 +42,7 @@ neuro_draw(() => {
     const [onset, decay] = neuro_get_all('onset', 'decay');
     let t = neuro_get('t', 0);
 
-    onset.detect() && decay.set(1.05);
+    //onset.detect() && decay.set(1.05);
     t += amp.getLevel() * decay.get() * 2;
 
     background(0);

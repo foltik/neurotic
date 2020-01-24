@@ -1,6 +1,7 @@
 neuro_setup(() => {
     neuro_source('in');
     let canvas = createCanvas(1280, 720, WEBGL);
+    smooth();
 });
 
 const [rows, cols] = [50, 50, 10];
@@ -29,6 +30,8 @@ neuro_draw(() => {
     background(0);
     rotateX(radians(60));
     translate(1280 / -2, 720 / -2);
+
+    translate(150, -450, -150);
 
     scale(20);
 
