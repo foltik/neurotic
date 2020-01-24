@@ -28,8 +28,6 @@ neuro_draw(() => {
 
     stroke(255);
 
-
-
     // Change the color
     // curl localhost:8000/http/set?color=0.83
     stroke(...rgb(neuro_get('color'), 1, 1));
