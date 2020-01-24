@@ -57,5 +57,26 @@ neuro_draw(() => {
     strokeWeight(3);
     crystal(600, 150 * decay.get(), lerp(0.5, 0.4)(mirror(2)(t * 0.03)));
 
+
+    rotateX(degrees(90));
+
+    stroke(255);
+    strokeWeight(3);
+    circle(0, 0, 500);
+
+    stroke(0, 195, 255);
+    strokeWeight(25);
+    point(250 * cos(t), 250 * sin(t));
+
+    rotateX(degrees(-180.001));
+
+    stroke(255);
+    strokeWeight(3);
+    circle(0, 0, 500);
+
+    stroke(0, 195, 255);
+    strokeWeight(25);
+    point(250 * cos(t * 1.1), 250 * sin(t * 1.1));
+
     neuro_set('t', t);
 });
