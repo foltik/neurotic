@@ -10,12 +10,12 @@ function* range(i, j, delta) {
         yield* range(0, i, 1);
     } else if (arguments.length === 2) {
         yield* range(i, j, 1);
-    }
-
-    let n = 0;
-    while (i < j) {
-        yield i;
-        i += delta;
+    } else {
+        let n = 0;
+        while (i < j) {
+            yield i;
+            i += delta;
+        }
     }
 };
 const arange = arrize(range);
