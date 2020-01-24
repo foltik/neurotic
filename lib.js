@@ -150,8 +150,8 @@ const amap = (xs0, xs1, ys0, ys1) => x =>
       zip(zip(xs0, xs1), zip(ys0, ys1))
           .map(([[x0, x1], [y0, y1]]) => map(x, x0, x1, y0, y1));
 
-const lerp = (y0, y1) => cmap(0, 1, y0, y1);
-const ilerp = (x0, x1) => cmap(x0, x1, 0, 1);
+const lerp = (y0, y1) => x => cmap(0, 1, y0, y1)(x % 1);
+const ilerp = (x0, x1) => x => cmap(x0, x1, 0, 1)(x) % 1;
 
 const alerp = (ys0, ys1) =>
       zip(ys0, ys1).map(([y0, y1]) => cmap(0, 1, y0, y1));
@@ -160,7 +160,7 @@ const ailerp = (xs0, xs1) =>
       zip(xs0, xs1).map(([x0, x1]) => cmap(x0, x1, 0, 1));
 
 const gradient = (c0, c1) => x =>
-      alerp(c0, c1).amap(f => f(x % 1));
+      alerp(c0, c1).amap(f => f(x));
 
 const ngradient = (...pts) => {
     const [[p0], ...ps] = pts;
@@ -171,6 +171,20 @@ const ngradient = (...pts) => {
     ], [
         () => {},
         [p0, 0]
+    ]);
+
+    return x => fn(x % 1);
+};
+
+const ninterp = (...pts) => {
+    const [[v0], ...ps] = pts;
+
+    const [fn] = ps.reduce(([fn, [v0, x0]], [v1, x1]) => [
+        x => x >= x0 && x < x1 ? lerp(v0, v1)(ilerp(x0, x1)(x)) : fn(x),
+        [v1, x1]
+    ], [
+        () => {},
+        [v0, 0]
     ]);
 
     return x => fn(x % 1);
