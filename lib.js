@@ -459,3 +459,4 @@ socket.on('script', ({name, data}) => {
     }
 });
 
+window['mousePressed'] = function() { getAudioContext().resume(); };
