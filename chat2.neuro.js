@@ -132,9 +132,9 @@ function chat2(color1, color2, w, h, t) {
         endShape();
     });
 
-    rect(w - 170, -27, lerp(0, 80)(mirror(2)(t * 0.8)), 3);
-    rect(w - 170, -22, lerp(0, 100)(mirror(2)(t * 0.5)), 3);
-    rect(w - 170, -17, lerp(0, 110)(mirror(2)(t * 0.6)), 3);
+    rect(w - 170, -27, cmap(0, 255, 0, 170)(fft.getEnergy(40, 110)), 3);
+    rect(w - 170, -22, cmap(0, 255, 0, 170)(fft.getEnergy(110, 250)), 3);
+    rect(w - 170, -17, cmap(0, 255, 0, 170)(fft.getEnergy(250, 500)), 3);
 
     textFont(neuro_font('go'));
 
@@ -142,7 +142,7 @@ function chat2(color1, color2, w, h, t) {
     msgs.reverse().map(({name, msg}, i) => {
         const y = h - i * 16;
         if (name) {
-            fill(0, 195, 255);
+            fill(...color2);
             text(name, 0, h - i * 16);
             fill(255);
             text(`: ${msg}`, textWidth(name), y);
@@ -163,7 +163,7 @@ neuro_draw(() => {
     fill(255);
     textAlign(LEFT);
 
-    const color1 = rgb(0.73, 1, 1);
+    const color1 = rgb(0.72, 1, 1);
     const color2 = rgb(0.78, 1, 1);
 
     translate(100, 100);
