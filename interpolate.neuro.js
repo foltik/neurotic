@@ -10,7 +10,7 @@ neuro_draw(() => {
 
     ['ease', 'ease_in', 'ease_out', 'ease_in_out', 'rstep(10)', 'bezier(0.77, 0.05, 0.7, 0.92)'].map((fn, i) => {
         circle(200 + (eval(fn)(mirror(2)(t)) * 700), 50 * (i + 1), 50);
-        text(fn, 40, 50 * (i + 1));
+        //text(fn, 40, 50 * (i + 1));
     });
 
     neuro_set('t', t + 0.005);
