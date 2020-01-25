@@ -6,7 +6,7 @@ neuro_config({
 
 neuro_setup(() => {
     neuro_source('in');
-    let canvas = createCanvas(1600, 900, WEBGL);
+    let canvas = createCanvas(720, 720, WEBGL);
 });
 
 neuro_init(() => {
@@ -25,13 +25,13 @@ function crystal(h, r, prop) {
     hex.each(([x, z]) =>
         line(...p_top, x, -h * prop / 2, z));
 
-    hex.zip_next().map(([[x0, z0], [x1, z1]]) =>
+    hex.zip_next().each(([[x0, z0], [x1, z1]]) =>
         line(x0, -h * prop / 2, z0, x1, -h * prop / 2, z1));
 
     hex.each(([x, z]) =>
         line(...p_bot, x, h * prop / 2, z));
 
-    hex.zip_next().map(([[x0, z0], [x1, z1]]) =>
+    hex.zip_next().each(([[x0, z0], [x1, z1]]) =>
         line(x0, h * prop / 2, z0, x1, h * prop / 2, z1));
 
     hex.each(([x, z]) =>
