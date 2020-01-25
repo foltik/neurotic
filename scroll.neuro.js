@@ -4,7 +4,7 @@ neuro_preload(() => {
 
 neuro_setup(() => {
     neuro_source('in');
-    let canvas = createCanvas(900, 900);
+    let canvas = createCanvas(900, 1080);
 });
 
 neuro_init(() => {
