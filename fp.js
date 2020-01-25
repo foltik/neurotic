@@ -3,6 +3,8 @@ const add = (...vs) => vs.reduce((vs, v) => vs + v, 0);
 const even = i => i % 2 == 0;
 const odd = i => i % 2 == 1;
 
+const sum = vs => vs.reduce((sum, v) => sum + v);
+
 const arrize = f => (...args) => [...f(...args)];
 
 function* range(i, j, delta) {
@@ -87,6 +89,18 @@ const afzip = arrize(fzip);
 const zip = fzip(id);
 const azip = arrize(zip);
 
+const cartesian = (...iters) => iters.reduce((a, b) => [].concat(...a.map(a => b.map(b => [].concat(a, b)))));
+/*
+
+TODO
+
+function* cartesian(...iters) {
+    for (let i of iters)
+        for (let j of iters)
+            yield
+}
+*/
+
 const fork = (n, iter) => {
     iter = iter[Symbol.iterator]();
     const buffers = range(n).amap(_ => []);
@@ -126,6 +140,7 @@ Array.prototype.atake = function(n) { return atake(n)(this); };
 Array.prototype.skip = function(n) { return skip(n)(this); };
 Array.prototype.askip = function(n) { return askip(n)(this); };
 Array.prototype.cycle = function() { return cycle(this); };
+Array.prototype.sum = function() { return sum(this); };
 
 const GeneratorFunction = (function*(){}).__proto__;
 GeneratorFunction.prototype.each = function(fn) {

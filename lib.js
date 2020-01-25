@@ -18,6 +18,8 @@ const at = (x, y, fn) => wit(() => translate(x, y), fn);
 const rectangular = (r, theta) => [r * cos(theta), r * sin(theta)];
 const polar = (x, y) => [sqrt(x * x + y * y), atan(y / x)];
 
+const dist = (xs, ys) => sqrt(xs.zip(ys).amap(([x,y]) => pow(y - x, 2)).sum());
+
 const rgb = (h, s, v) => {
     let r, g, b;
 
@@ -402,7 +404,7 @@ const neuro_structure = (name, pre, post = () => {}) => fn => {
                 fn();
                 post();
             } catch (e) {
-                console.error(e.stack);
+                console.error(e);
                 err = true;
             }
         } else {
