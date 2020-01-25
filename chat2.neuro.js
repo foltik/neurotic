@@ -122,13 +122,15 @@ function chat2(color1, color2, w, h, t) {
 
     noStroke();
     fill(255);
-    const f = 22;
-    range(5).each(i => {
+    const dy = 22;
+    const c = 4;
+    range();
+    range(istep(6)(amp.getLevel() * c)).each(i => {
         beginShape();
-        vertex(w + 30, 74 + i * f);
-        vertex(w + 10, 92 + i * f);
-        vertex(w + 10, 107 + i * f);
-        vertex(w + 30, 89 + i * f);
+        vertex(w + 30, 74 + i * dy);
+        vertex(w + 10, 92 + i * dy);
+        vertex(w + 10, 107 + i * dy);
+        vertex(w + 30, 89 + i * dy);
         endShape();
     });
 
