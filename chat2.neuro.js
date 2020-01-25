@@ -123,7 +123,7 @@ function chat2(color1, color2, w, h, t) {
     noStroke();
     fill(255);
     const dy = 22;
-    const c = 4;
+    const c = 5;
     range();
     range(istep(6)(amp.getLevel() * c)).each(i => {
         beginShape();
