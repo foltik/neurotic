@@ -54,7 +54,7 @@ neuro_draw(() => {
     rotateY(t * 0.1);
     rotateX(t * 0.03);
 
-    psphere(rgb(0.95, 1, 1), 11, 11, 250);
+    psphere(rgb(0.95, 1, 1), 11, 11, 80);
 
     neuro_set('t', t + amp.getLevel());
 });

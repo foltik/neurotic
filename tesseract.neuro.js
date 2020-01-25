@@ -74,7 +74,7 @@ neuro_draw(() => {
     let t = neuro_get('t', 0);
     background(0);
 
-    tesseract(rgb(0.95, 1, 1), 100, t * 0.1, 0.4, 0.1, t * 0.01, 0, 0);
+    tesseract(rgb(0.95, 1, 1), 50, t * 0.1, 0.4, 0.1, t * 0.01, 0, 0);
 
     neuro_set('t', t + amp.getLevel());
 });

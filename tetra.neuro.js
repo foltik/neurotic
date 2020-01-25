@@ -26,9 +26,9 @@ neuro_draw(() => {
     rotateX(t * 0.12);
 
     const color = rgb(0.95, 1, 1);
-    tetra(color, 160);
+    tetra(color, 80);
     rotateX(radians(90));
-    tetra(color, 85);
+    tetra(color, 42);
 
     neuro_set('t', t + amp.getLevel());
 });
