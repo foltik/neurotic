@@ -21,8 +21,8 @@ neuro_draw(() => {
         const h = -height + map(data[i], 0, 255, height, 0);
         rect(((i+1) * width / len) - width/len, height, width/len, h);
 
-        fill(255);
-        text(bands[i].lo.toFixed(0), (i + 1) * width / len - width / len / 2, 30);
-        text(bands[i].hi.toFixed(0), (i + 1) * width / len - width / len / 2, 45);
+        //fill(255);
+        //text(bands[i].lo.toFixed(0), (i + 1) * width / len - width / len / 2, 30);
+        //text(bands[i].hi.toFixed(0), (i + 1) * width / len - width / len / 2, 45);
     });
 });
